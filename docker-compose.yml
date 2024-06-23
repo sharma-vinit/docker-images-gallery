@@ -1,18 +1,23 @@
-version: '3.9'
-services:
-  frontend:
-    build: ./frontend
-    ports:
-      - '3000:3000'
-    volumes:
-      - /app/node_modules
-      - ./frontend:/app
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+# Docker Compose file version
+version: '3.9'  # Specifies the version of Docker Compose to use.
 
-  api:
-    build: ./api
+services:  # Defines the services (containers) that make up the application.
+
+  # Service for the frontend of the application
+  frontend:
+    build: ./frontend  # Location of the Dockerfile and source code for building the frontend image.
     ports:
-      - '5050:5050'
+      - '3000:3000'  # Maps port 3000 on the host to port 3000 in the container, allowing access to the frontend.
     volumes:
-      - ./api:/app
+      - /app/node_modules  # Preserves node_modules folder created in the container by mapping it to an anonymous volume. This prevents overriding by the bind mount below.
+      - ./frontend:/app  # Mounts the frontend directory from the host into the /app directory in the container, allowing live code updates.
+    environment:
+      - CHOKIDAR_USEPOLLING=true  # Environment variable for enabling polling method in Chokidar (a file watching library). This helps in environments where file events are unreliable, like some Docker setups.
+
+  # Service for the API of the application
+  api:
+    build: ./api  # Location of the Dockerfile and source code for building the API image.
+    ports:
+      - '5050:5050'  # Maps port 5050 on the host to port 5050 in the container, allowing access to the API.
+    volumes:
+      - ./api:/app  # Mounts the API directory from the host into the /app directory in the container, ensuring that changes in the API are reflected live.
