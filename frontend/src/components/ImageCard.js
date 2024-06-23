@@ -1,19 +1,18 @@
 import React from 'react';
-import { Card, Button } from 'react-bootstrap';
 
-const ImageCard = ({ image, deleteImage }) => {
-  return (
-    <Card style={{ width: '18rem' }}>
-      <Card.Img variant="top" src={image.urls.small} />
-      <Card.Body>
-        <Card.Title>{image.title.toUpperCase()}</Card.Title>
-        <Card.Text>{image.description || image.alt_description}</Card.Text>
-        <Button variant="primary" onClick={() => deleteImage(image.id)}>
-          Delete
-        </Button>
-      </Card.Body>
-    </Card>
-  );
-};
+const ImageCard = ({ image, handleDelete }) => (
+  <div className="relative border rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out">
+    <button onClick={() => handleDelete(image.id)} className="absolute right-2 top-2 text-white bg-black bg-opacity-50 rounded-md p-1 text-xs">
+      Close ✕
+    </button>
+    <img className="w-full h-48 object-cover" src={image.urls.small} alt={image.title} />
+    <div className="p-4 bg-white">
+      <h5 className="text-lg font-bold">{image.title}</h5>
+      <p className="text-sm text-gray-600">{image.description}</p>
+    </div>
+  </div>
+);
+
+
 
 export default ImageCard;

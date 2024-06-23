@@ -4,15 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "==1.1.2"
-requests = "==2.25.1"
-python-dotenv = "==0.15.0"
-flask-cors = "==3.0.10"
+flask = ">=2.2.2"  # Updated for compatibility and features
+requests = ">=2.28.1"  # Updated to the latest version for better performance and security
+python-dotenv = ">=0.20.0"  # Updated to the latest version
+flask-cors = ">=3.0.10"  # Kept as is since it's the latest as of now
 
 [dev-packages]
-black = "==20.8b1"
-pylint = "==2.7.2"
-pycodestyle = "==2.6.0"
+black = ">=23.3.0"  # Updated to the latest version
+pylint = ">=2.15.0"  # Updated to the latest version compatible with newer Python versions
+pycodestyle = ">=2.8.0"  # Updated for improved support and compatibility
 
 [requires]
-python_version = "3.9"
+python_version = "3.12"

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Jumbotron, Button } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
 
 const Welcome = () => (
-  <Jumbotron>
+  <Container>
     <h1>Images Gallery</h1>
     <p>
       This is simple application that retrieves photos using Unspash API. In
@@ -13,7 +13,7 @@ const Welcome = () => (
         Learn more
       </Button>
     </p>
-  </Jumbotron>
+  </Container>
 );
 
 export default Welcome;

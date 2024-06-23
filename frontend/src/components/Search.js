@@ -1,32 +1,22 @@
 import React from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 
-const Search = ({ word, setWord, handleSubmit }) => {
-  return (
-    <Container className="mt-4">
-      <Row className="justify-content-center">
-        <Col xs={12} md={8} lg={6}>
-          <Form onSubmit={handleSubmit}>
-            <Form.Row>
-              <Col xs={9}>
-                <Form.Control
-                  type="text"
-                  value={word}
-                  onChange={(e) => setWord(e.target.value)}
-                  placeholder="Search for new image..."
-                />
-              </Col>
-              <Col>
-                <Button variant="primary" type="submit">
-                  Search
-                </Button>
-              </Col>
-            </Form.Row>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
-  );
-};
+const Search = ({ word, setWord, handleSubmit }) => (
+  <form onSubmit={handleSubmit} className="flex justify-center mt-6 mb-4">
+    <input
+      type="text"
+      placeholder="Search for images..."
+      className="form-input mt-1 block w-full md:w-2/3 px-4 py-3 border rounded-md shadow-sm"
+      value={word}
+      onChange={(e) => setWord(e.target.value)}
+    />
+    <button
+      type="submit"
+      className="ml-4 px-6 py-3 bg-blue-500 text-white font-semibold rounded-md shadow hover:bg-blue-600"
+    >
+      Search
+    </button>
+  </form>
+);
+
 
 export default Search;
