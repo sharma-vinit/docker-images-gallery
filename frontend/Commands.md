@@ -1,6 +1,17 @@
+Move to frontend directory
+```bash
+vinit:~$ cd ~/images-gallery/frontend
+```
 
-vinit@DESKTOP-5UKOS8J:~/images-gallery/frontend$ docker build --no-cache -t images-gallery-frontend .
-docker run --name frontend -p 3000:3000 images-gallery-frontend
+Build image `images-gallery-frontend`
+```bash
+vinit:~/images-gallery/frontend$ docker build --no-cache -t images-gallery-frontend .
+```
+
+Run container using `images-gallery-frontend` image
+```bash
+vinit:~/images-gallery/frontend$ docker run --name frontend -p 3000:3000 images-gallery-frontend
+```
 
 
 
