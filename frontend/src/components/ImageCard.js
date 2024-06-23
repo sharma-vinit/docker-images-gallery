@@ -19,7 +19,7 @@ const ImageCard = ({ image, handleDelete }) => (
       onClick={() => handleDelete(image.id)}
 
       // Styling for the button with transitions and hover effects for better user interaction feedback
-      className="absolute right-2 top-2 text-white font-bold bg-black bg-opacity-50 hover:bg-opacity-80 rounded-md p-1 text-xs transition duration-300 ease-in-out transform hover:scale-110"
+      className="absolute right-2 top-2 text-white font-bold bg-black bg-opacity-50 hover:bg-opacity-80 rounded-sm p-1 text-xs transition duration-300 ease-in-out transform hover:scale-110"
       
       // Accessibility label for better screen reader support
       aria-label="Close">
