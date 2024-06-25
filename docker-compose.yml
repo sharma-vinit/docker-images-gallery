@@ -1,23 +1,66 @@
 # Docker Compose file version
-version: '3.9'  # Specifies the version of Docker Compose to use.
+version: '3.9'  # Specifies the version of Docker Compose to use. Version 3.9 supports specific features like named volumes and build configurations useful for development and production parity.
 
-services:  # Defines the services (containers) that make up the application.
+services:  # Defines the services (containers) that make up the application, encapsulating different components of a typical web application.
 
   # Service for the frontend of the application
   frontend:
-    build: ./frontend  # Location of the Dockerfile and source code for building the frontend image.
+    build: ./frontend  # Location of the Dockerfile and source code for building the frontend image, useful for custom build contexts.
     ports:
-      - '3000:3000'  # Maps port 3000 on the host to port 3000 in the container, allowing access to the frontend.
+      - '3000:3000'  # Maps port 3000 on the host to port 3000 in the container, allowing external access to the frontend.
     volumes:
-      - /app/node_modules  # Preserves node_modules folder created in the container by mapping it to an anonymous volume. This prevents overriding by the bind mount below.
-      - ./frontend:/app  # Mounts the frontend directory from the host into the /app directory in the container, allowing live code updates.
+      - /app/node_modules  # Preserves node_modules folder created in the container by mapping it to an anonymous volume. This prevents it from being overwritten by the bind mount below, which is critical for performance.
+      - ./frontend:/app  # Mounts the frontend directory from the host into the /app directory in the container, facilitating live code updates during development.
     environment:
-      - CHOKIDAR_USEPOLLING=true  # Environment variable for enabling polling method in Chokidar (a file watching library). This helps in environments where file events are unreliable, like some Docker setups.
+      - CHOKIDAR_USEPOLLING=true  # Sets an environment variable to enable polling in Chokidar (used in hot-reloading). This method is necessary in environments where filesystem events are not reliably propagated to Docker containers.
+    restart: always  # Ensures the container automatically restarts if it stops, which is vital for maintaining service availability, especially in production.
 
   # Service for the API of the application
   api:
-    build: ./api  # Location of the Dockerfile and source code for building the API image.
+    build: ./api  # Specifies the location of the Dockerfile for the API, allowing Docker to build the image directly from source code.
     ports:
-      - '5050:5050'  # Maps port 5050 on the host to port 5050 in the container, allowing access to the API.
+      - '5050:5050'  # Exposes port 5050 of the container to port 5050 on the host, enabling access to the API from external systems.
     volumes:
-      - ./api:/app  # Mounts the API directory from the host into the /app directory in the container, ensuring that changes in the API are reflected live.
+      - ./api:/app  # Bind mounts the API source code directory from the host to the container, enabling live updates to the code without needing to rebuild the image.
+    restart: always  # Configures the API service to restart on failure automatically, ensuring the API remains available at all times.
+
+  # MongoDB service
+  mongo:
+    image: mongo:7.0  # Specifies the use of the official MongoDB image version 7.0 from Docker Hub.
+    restart: always  # Sets the MongoDB container to restart automatically in case of crashes, ensuring data persistence and availability.
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root  # MongoDB root user's username, used for initializing the database securely.
+      MONGO_INITDB_ROOT_PASSWORD: password  # MongoDB root user's password, providing initial access control.
+    volumes:
+      # Recommended for Production
+      # Use named volumes for better data encapsulation and management. 
+      # Named volumes are more robust and less dependent on the host's filesystem structure, 
+      # which enhances portability and reduces the risk of accidental data loss if someone modifies the host directory.
+      # - mongodb_data:/data/db  # Uses a named volume for MongoDB data to persist data across container rebuilds and restarts.
+
+
+      # Useful for Development
+      # Use bind mounts if you need to frequently access or modify the data from outside the container, as it makes the data directly accessible and editable from the host.
+      - ${PWD}/database/MongoDb:/data/db  # Directly mounts a directory from the host into the container to persist MongoDB data, analogous to the behavior seen with Docker CLI.
+
+
+# Remove or comment out this line if volumes and/or mongodb_data is not used elsewhere
+# volumes:
+  # Named volume for MongoDB data, declared to persist data independently of container lifecycle.
+  # mongodb_data:
+
+
+  # MongoDB web interface
+  mongo-express:
+    image: mongo-express  # Utilizes the Mongo Express official image to provide a web-based MongoDB management interface.
+    restart: always  # Configures Mongo Express to automatically restart, ensuring the management interface remains available.
+    ports:
+      - 8081:8081  # Maps port 8081 on the host to port 8081 in the container, allowing web-based access to MongoDB data.
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo  # Specifies the MongoDB server address; links to the 'mongo' service in this configuration.
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root  # MongoDB admin username, consistent with MongoDB service configuration.
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password  # MongoDB admin password, providing secure access to the database.
+      ME_CONFIG_MONGODB_URL: mongodb://root:password@mongo:27017/  # Full MongoDB connection URL, necessary for connecting Mongo Express to MongoDB.
+      ME_CONFIG_BASICAUTH: false  # Disables basic authentication for accessing Mongo Express, suitable for development environments.
+    depends_on:
+      - mongo  # Ensures Mongo Express starts only after MongoDB has started, managing service dependencies effectively.
